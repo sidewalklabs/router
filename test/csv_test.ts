@@ -67,7 +67,7 @@ describe('parseCSV', () => {
   );
 
   it('should ignore trailing newlines', () => {
-    expect(collectRows('data/short_name.trips.txt')).to.eventually.have.length(10);
+    return expect(collectRows('test/short_name.trips.txt')).to.eventually.have.length(10);
   });
 
   it('should parse quoted text', () => {
@@ -83,8 +83,8 @@ describe('parseCSV', () => {
     const filename = writeTempFile(dedent`
         a,b,c
         foo,"bar,baz",quux
-        `);
-    expect(collectRows(filename)).to.eventually.deep.equal([
+        `.trim());
+    return expect(collectRows(filename)).to.eventually.deep.equal([
       ['a', 'b', 'c'],
       ['foo', 'bar,baz', 'quux'],
     ]);

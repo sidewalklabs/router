@@ -5,7 +5,9 @@
   "main": "src/cli.ts",
   "scripts": {
     "lint": "tslint src/*.ts test/*.ts",
-    "test": "tsc && npm run lint && mocha --compilers ts:ts-node/register test/*_test.ts && ./test/generate-sample-routes.sh",
+    "test": "tsc && yarn lint && yarn run run-tests && yarn run run-golden-tests",
+    "run-tests": "mocha --compilers ts:ts-node/register test/*_test.ts",
+    "run-golden-tests": "./test/generate-sample-routes.sh",
     "perf": "ts-node test/perf/performance.ts",
     "postinstall": "unzip -o test/nyc-gtfs.zip -d test/nyc-gtfs"
   },

@@ -41,7 +41,6 @@ jspm_packages
 *.js.map
 
 # Data files
-/data
 /output
 /*.csv.gz
 

@@ -1,0 +1,10 @@
+route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id
+8474,1,974933,3 Ysleta Express Outbound    ,,0,271040,28010
+8474,1,974934,3 Ysleta Express Outbound    ,,0,271041,28010
+8474,1,974935,3 Ysleta Express Outbound    ,,0,271042,28010
+8474,1,974936,3 Ysleta Express Outbound    ,,0,271040,28010
+8474,1,974937,3 Ysleta Express Outbound    ,,0,271041,28010
+8474,1,974938,3 Ysleta Express Outbound    ,,0,271042,28010
+8474,1,974939,3 Ysleta Express Outbound    ,,0,271040,28010
+8474,1,974940,3 Ysleta Express Outbound    ,,0,271041,28010
+8474,1,974941,3 Ysleta Express Outbound    ,,0,271042,28010

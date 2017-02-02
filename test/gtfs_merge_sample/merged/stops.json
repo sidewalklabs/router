@@ -1,0 +1,42 @@
+[
+  {
+    "stopId": "gtfs_a_stop_1",
+    "stopName": "",
+    "stopDesc": "",
+    "stopLat": 11.1,
+    "stopLng": -11.1,
+    "feed": "gtfs_a"
+  },
+  {
+    "stopId": "stop_2",
+    "stopName": "",
+    "stopDesc": "",
+    "stopLat": 11.102,
+    "stopLng": -11.102,
+    "feed": "gtfs_a"
+  },
+  {
+    "stopId": "stop_4",
+    "stopName": "",
+    "stopDesc": "",
+    "stopLat": 4.4,
+    "stopLng": -4.4,
+    "feed": "gtfs_a"
+  },
+  {
+    "stopId": "gtfs_b_stop_1",
+    "stopName": "",
+    "stopDesc": "",
+    "stopLat": 10.1,
+    "stopLng": -10.1,
+    "feed": "gtfs_b"
+  },
+  {
+    "stopId": "stop_3",
+    "stopName": "",
+    "stopDesc": "",
+    "stopLat": 11.103,
+    "stopLng": -11.103,
+    "feed": "gtfs_b"
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "max_walking_distance_km": 1.5,
+  "max_allowable_between_stop_walk_km": 1.5,
+  "walking_speed_kph": 5.1,
+  "max_number_of_transfers": 1,
+  "max_waiting_time_secs": 3600,
+  "transfer_penalty_secs": 30,
+  "rail_multiplier": 1,
+  "bus_multiplier": 1,
+  "departure_time": "06:00:00",
+  "departure_date": "20080818",
+  "gtfs_data_dirs": ["data/sample"]
+}

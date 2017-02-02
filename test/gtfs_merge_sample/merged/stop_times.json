@@ -1,0 +1,50 @@
+[
+  {
+    "tripId": "gtfs_a_trip_1",
+    "stopId": "gtfs_a_stop_1",
+    "timeOfDaySec": 21600,
+    "stopSequence": 1,
+    "arrivalTime": "6:00:00",
+    "departureTime": "6:00:00"
+  },
+  {
+    "tripId": "gtfs_a_trip_1",
+    "stopId": "stop_2",
+    "timeOfDaySec": 22200,
+    "stopSequence": 1,
+    "arrivalTime": "6:10:00",
+    "departureTime": "6:10:00"
+  },
+  {
+    "tripId": "gtfs_a_trip_1",
+    "stopId": "stop_4",
+    "timeOfDaySec": 22800,
+    "stopSequence": 1,
+    "arrivalTime": "6:20:00",
+    "departureTime": "6:20:00"
+  },
+  {
+    "tripId": "gtfs_b_trip_1",
+    "stopId": "gtfs_b_stop_1",
+    "timeOfDaySec": 25200,
+    "stopSequence": 1,
+    "arrivalTime": "7:00:00",
+    "departureTime": "7:00:00"
+  },
+  {
+    "tripId": "gtfs_b_trip_1",
+    "stopId": "stop_3",
+    "timeOfDaySec": 25800,
+    "stopSequence": 1,
+    "arrivalTime": "7:10:00",
+    "departureTime": "7:10:00"
+  },
+  {
+    "tripId": "gtfs_b_trip_1",
+    "stopId": "stop_4",
+    "timeOfDaySec": 26400,
+    "stopSequence": 1,
+    "arrivalTime": "7:20:00",
+    "departureTime": "7:20:00"
+  }
+]

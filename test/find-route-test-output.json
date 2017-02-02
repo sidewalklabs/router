@@ -1,0 +1,305 @@
+{"test":[
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.915682,
+    "longitude": -116.751677
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.914893,
+    "longitude": -116.76821
+  },
+  "travelTimeSecs": 840,
+  "walkingDistanceKm": 0,
+  "steps": [
+    {
+      "from": {
+        "stopId": "STAGECOACH",
+        "stopName": "Stagecoach Hotel & Casino (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.915682,
+        "stopLng": -116.751677,
+        "feed": "sample"
+      },
+      "to": {
+        "stopId": "NADAV",
+        "stopName": "North Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.914893,
+        "stopLng": -116.76821,
+        "feed": "sample"
+      },
+      "mode": 1,
+      "travelTimeSecs": 840,
+      "numStops": 2,
+      "tripId": "CITY1",
+      "routeId": "CITY",
+      "description": "Take CITY 2 stops from Stagecoach Hotel & Casino (Demo) to North Ave / D Ave N (Demo).",
+      "departTime": " 6:00:00",
+      "arriveTime": " 6:14:00"
+    }
+  ],
+  "departureTime": " 6:00:00",
+  "arriveTime": " 6:14:00"
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.9132,
+    "longitude": -116.770428
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.909541,
+    "longitude": -116.758238
+  },
+  "travelTimeSecs": 817,
+  "walkingDistanceKm": 1.16,
+  "steps": [
+    {
+      "from": {
+        "stopId": "origin",
+        "stopName": "origin",
+        "stopLat": 36.9132,
+        "stopLng": -116.770428
+      },
+      "to": {
+        "stopId": "destination",
+        "stopName": "destination",
+        "stopLat": 36.909541,
+        "stopLng": -116.758238
+      },
+      "mode": 2,
+      "travelTimeSecs": 817,
+      "distanceKm": 1.16,
+      "description": "Walk 1.2 km from origin to destination.",
+      "departTime": " 6:00:00",
+      "arriveTime": " 6:13:36"
+    }
+  ],
+  "departureTime": " 6:00:00",
+  "arriveTime": " 6:13:36"
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.641029,
+    "longitude": -116.400345
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.914335,
+    "longitude": -116.75345
+  },
+  "error": "No route found."
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.909438,
+    "longitude": -116.770491
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.914335,
+    "longitude": -116.75345
+  },
+  "travelTimeSecs": 2262,
+  "walkingDistanceKm": 2.06,
+  "steps": [
+    {
+      "from": {
+        "stopId": "origin",
+        "stopName": "origin",
+        "stopLat": 36.909438,
+        "stopLng": -116.770491
+      },
+      "to": {
+        "stopId": "NADAV",
+        "stopName": "North Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.914893,
+        "stopLng": -116.76821,
+        "feed": "sample"
+      },
+      "mode": 2,
+      "travelTimeSecs": 451,
+      "distanceKm": 0.64,
+      "description": "Walk 0.6 km from origin to North Ave / D Ave N (Demo).",
+      "departTime": " 6:00:00",
+      "arriveTime": " 6:07:31"
+    },
+    {
+      "from": {
+        "stopId": "NADAV",
+        "stopName": "North Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.914893,
+        "stopLng": -116.76821,
+        "feed": "sample"
+      },
+      "to": {
+        "stopId": "DADAN",
+        "stopName": "Doing Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.909489,
+        "stopLng": -116.768242,
+        "feed": "sample"
+      },
+      "mode": 1,
+      "travelTimeSecs": 420,
+      "numStops": 1,
+      "tripId": "CITY1",
+      "routeId": "CITY",
+      "description": "Take CITY 1 stop from North Ave / D Ave N (Demo) to Doing Ave / D Ave N (Demo).",
+      "departTime": " 6:14:00",
+      "arriveTime": " 6:21:00"
+    },
+    {
+      "from": {
+        "stopId": "DADAN",
+        "stopName": "Doing Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.909489,
+        "stopLng": -116.768242,
+        "feed": "sample"
+      },
+      "to": {
+        "stopId": "destination",
+        "stopName": "destination",
+        "stopLat": 36.914335,
+        "stopLng": -116.75345
+      },
+      "mode": 2,
+      "travelTimeSecs": 1002,
+      "distanceKm": 1.42,
+      "description": "Walk 1.4 km from Doing Ave / D Ave N (Demo) to destination.",
+      "departTime": " 6:21:00",
+      "arriveTime": " 6:37:42"
+    }
+  ],
+  "departureTime": " 6:00:00",
+  "arriveTime": " 6:37:42"
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.909438,
+    "longitude": -116.770491
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.914335,
+    "longitude": -116.75345
+  },
+  "travelTimeSecs": 1765,
+  "walkingDistanceKm": 0.92,
+  "steps": [
+    {
+      "from": {
+        "stopId": "origin",
+        "stopName": "origin",
+        "stopLat": 36.909438,
+        "stopLng": -116.770491
+      },
+      "to": {
+        "stopId": "DADAN",
+        "stopName": "Doing Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.909489,
+        "stopLng": -116.768242,
+        "feed": "sample"
+      },
+      "mode": 2,
+      "travelTimeSecs": 141,
+      "distanceKm": 0.2,
+      "description": "Walk 0.2 km from origin to Doing Ave / D Ave N (Demo).",
+      "departTime": " 6:30:00",
+      "arriveTime": " 6:32:21"
+    },
+    {
+      "from": {
+        "stopId": "DADAN",
+        "stopName": "Doing Ave / D Ave N (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.909489,
+        "stopLng": -116.768242,
+        "feed": "sample"
+      },
+      "to": {
+        "stopId": "NANAA",
+        "stopName": "North Ave / N A Ave (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.914944,
+        "stopLng": -116.761472,
+        "feed": "sample"
+      },
+      "mode": 1,
+      "travelTimeSecs": 840,
+      "numStops": 2,
+      "tripId": "CITY2",
+      "routeId": "CITY",
+      "description": "Take CITY 2 stops from Doing Ave / D Ave N (Demo) to North Ave / N A Ave (Demo).",
+      "departTime": " 6:37:00",
+      "arriveTime": " 6:51:00"
+    },
+    {
+      "from": {
+        "stopId": "NANAA",
+        "stopName": "North Ave / N A Ave (Demo)",
+        "stopDesc": "",
+        "stopLat": 36.914944,
+        "stopLng": -116.761472,
+        "feed": "sample"
+      },
+      "to": {
+        "stopId": "destination",
+        "stopName": "destination",
+        "stopLat": 36.914335,
+        "stopLng": -116.75345
+      },
+      "mode": 2,
+      "travelTimeSecs": 505,
+      "distanceKm": 0.72,
+      "description": "Walk 0.7 km from North Ave / N A Ave (Demo) to destination.",
+      "departTime": " 6:51:00",
+      "arriveTime": " 6:59:25"
+    }
+  ],
+  "departureTime": " 6:30:00",
+  "arriveTime": " 6:59:25"
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.985712,
+    "longitude": -116.817025
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.914893,
+    "longitude": -116.76821
+  },
+  "error": "No route found."
+}
+,
+{
+  "origin": {
+    "id": "origin",
+    "latitude": 36.914893,
+    "longitude": -116.76821
+  },
+  "destination": {
+    "id": "destination",
+    "latitude": 36.985712,
+    "longitude": -116.817025
+  },
+  "error": "No route found."
+}
+]}

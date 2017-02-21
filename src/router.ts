@@ -85,6 +85,12 @@ function isTripExcluded(trip: gtfs.Trip, options: QueryOptions): boolean {
   return (options.exclude_routes && options.exclude_routes.indexOf(trip.route_id) !== -1);
 }
 
+function isStopExcluded(stopId: string, options: QueryOptions): boolean {
+  return (options.exclude_stops &&
+          options.exclude_stops.length &&
+          options.exclude_stops.indexOf(stopId) >= 0);
+}
+
 // What cost multiplier should be applied to this trip? Zero means "don't take this route."
 function getCostMultiplier(trip: gtfs.Trip, feed: IndexedGTFS, options: QueryOptions): number {
   const route = feed.routeIdToRoute[trip.route_id];
@@ -149,6 +155,7 @@ export function takeVehicles(
       for (let i = idx + 1; i < allStopTimes.length; i++) {
         const thisStopTime = allStopTimes[i];
         if (thisStopTime.timeOfDaySec > lastValidTimeSecs) break;
+        if (isStopExcluded(thisStopTime.stopId, options)) break;
         addTransitConnection(tau, k, time, stopTime, allStopTimes[i], multiplier);
       }
     }
@@ -173,9 +180,10 @@ export function makeTransfers(
 
     const time = reach.timeOfDaySec;
     _.forEach(transfers[stopId], transfer => {
-      if (transfer.km > options.max_walking_distance_km) return;
+      if (transfer.km && transfer.km > options.max_walking_distance_km) return;
+      if (isStopExcluded(transfer.stopId, options)) return;
 
-      const secs = transfer.km * secsPerKm;
+      const secs = transfer.secs !== undefined ? transfer.secs : transfer.km * secsPerKm;
       const arrivalTime = time + secs;
       if (arrivalTime > lastValidTimeSecs) return;
       const destStopId = transfer.stopId;

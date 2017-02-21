@@ -210,14 +210,19 @@ export default class OnlineRouter {
     // limits. This will work even if a nefarious user passes max_allowable_number_of_transfers as
     // a query-time option.
     const overrides: Partial<QueryOptions> = {};
-    if (options.max_number_of_transfers) {
+    if (options.max_number_of_transfers && this.options.max_allowable_number_of_transfers) {
       overrides.max_number_of_transfers = Math.min(
           options.max_number_of_transfers, this.options.max_allowable_number_of_transfers);
     }
-    if (options.max_walking_distance_km) {
+    if (options.max_walking_distance_km && this.options.max_allowable_walking_distance_km) {
       overrides.max_walking_distance_km = Math.min(
         options.max_walking_distance_km, this.options.max_allowable_walking_distance_km);
     }
+
+    // If parent stops are excluded, exclude any child stops as well.
+    overrides.exclude_stops = _.flatMap(options.exclude_stops || [], stopId => {
+      return [stopId].concat(this.feed.parentStopIdToChildStopIds[stopId] || []);
+    });
 
     return _.extend({}, defaultOptions, this.options, options, overrides) as any;
   }

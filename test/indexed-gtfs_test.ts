@@ -4,7 +4,8 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 
 import GTFS from '../src/gtfs';
-import IndexedGTFS from '../src/indexed-gtfs';
+import * as gtfs from '../src/gtfs-types';
+import IndexedGTFS, { getExplicitTransfers, indexParents } from '../src/indexed-gtfs';
 import { loadLocationsCSV } from '../src/location';
 import Options, { defaultLoadingOptions } from '../src/options';
 
@@ -71,4 +72,73 @@ describe('Indexed GTFS', () => {
       expect(_.map(newFeed.walkingTransfers['FUR_CREEK_RES'], 'stopId')).to.deep.equal(['1', '2']);
     });
   }));
+
+  it('should index parent stops', () => {
+    const stops = [
+      { stopId: '1' },
+      { stopId: '1A', parentStation: '1' },
+      { stopId: '1B', parentStation: '1' },
+      { stopId: '2' },
+      { stopId: '2A', parentStation: '2' },
+      { stopId: '2B', parentStation: '2' },
+    ] as gtfs.Stop[];
+
+    expect(indexParents(stops)).to.deep.equal({
+      '1': ['1A', '1B'],
+      '2': ['2A', '2B'],
+    });
+  });
+
+  it('should generate transfers', () => {
+    const stops = [
+      { stopId: '1' },
+      { stopId: '1A', parentStation: '1' },
+      { stopId: '1B', parentStation: '1' },
+      { stopId: '2' },
+      { stopId: '2A', parentStation: '2' },
+      { stopId: '2B', parentStation: '2' },
+    ] as gtfs.Stop[];
+ 
+    const transfers = [
+      { fromStopId: '1', toStopId: '2', type: 2, minTransferTime: 10 },
+      // Transfers within a stop are usually free, but sometimes feeds specify a min time.
+      { fromStopId: '2', toStopId: '2', type: 2, minTransferTime: 30 },
+    ] as gtfs.Transfer[];
+
+    expect(getExplicitTransfers(stops, transfers)).to.deep.equal({
+      '1': [
+          { stopId: '1A', secs: 0 },
+          { stopId: '1B', secs: 0 },
+          { stopId: '2', secs: 10 },
+          { stopId: '2A', secs: 10 },
+          { stopId: '2B', secs: 10 },
+        ],
+      '1A': [
+          { stopId: '1', secs: 0 },
+          { stopId: '1B', secs: 0 },
+          { stopId: '2', secs: 10 },
+          { stopId: '2A', secs: 10 },
+          { stopId: '2B', secs: 10 },
+        ],
+      '1B': [
+          { stopId: '1', secs: 0 },
+          { stopId: '1A', secs: 0 },
+          { stopId: '2', secs: 10 },
+          { stopId: '2A', secs: 10 },
+          { stopId: '2B', secs: 10 },
+        ],
+      '2': [
+        { stopId: '2A', secs: 30 },
+        { stopId: '2B', secs: 30 },
+      ],
+      '2A': [
+        { stopId: '2', secs: 30 },
+        { stopId: '2B', secs: 30 },
+      ],
+      '2B': [
+        { stopId: '2', secs: 30 },
+        { stopId: '2A', secs: 30 },
+      ],
+    });
+  });
 });

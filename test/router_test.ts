@@ -166,8 +166,8 @@ describe('router', () => {
     // They take the same amount of time.
     const feed = new GTFS('test');
     feed.stops = [
-      { stopId: 'A', stopName: 'Stop A', stopLat: 0, stopLng: 0, stopDesc: '' },
-      { stopId: 'B', stopName: 'Stop B', stopLat: 1, stopLng: 1, stopDesc: '' },
+      { stopId: 'A', stopName: 'Stop A', stopLat: 0, stopLng: 0, stopDesc: '', feed: 'test' },
+      { stopId: 'B', stopName: 'Stop B', stopLat: 1, stopLng: 1, stopDesc: '', feed: 'test' },
     ];
 
     const noName = {route_short_name: '', route_long_name: ''};
@@ -187,6 +187,9 @@ describe('router', () => {
       { stopId: 'A', tripId: 'railT', stopSequence: 0, timeOfDaySec: 1060 },
       { stopId: 'B', tripId: 'railT', stopSequence: 1, timeOfDaySec: 1660 },  // also 10 mins
     ] as gtfs.StopTime[];
+
+    feed.transfers = [];
+    feed.attributes = { test: { hasTransfers: false } };
 
     const indexedFeed = new IndexedGTFS(feed, {} as any);
 

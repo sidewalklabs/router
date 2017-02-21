@@ -272,6 +272,7 @@ export default class GTFS {
       loadTransfers(this.directory + '/transfers.txt'),
       loadRoutes(this.directory + '/routes.txt'),
       loadShapes(this.directory + '/shapes.txt'),
+      loadTransfers(this.directory + '/transfers.txt'),
     ]).then(([stops, stopTimes, transfers, routes, shapes]) => {
       this.stops = stops;
       for (const stop of this.stops) stop.feed = this.name;

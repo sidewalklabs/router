@@ -97,6 +97,9 @@ export interface QueryOptions {
 
   // Routes to exclude, e.g. the L train.
   exclude_routes: string[];
+
+  // Stops to exclude, e.g. the Manhattan L stops or the new 2nd Avenue stops.
+  exclude_stops: string[];
 }
 
 export const defaults: QueryOptions = {
@@ -109,6 +112,7 @@ export const defaults: QueryOptions = {
   bus_multiplier: 1,
   rail_multiplier: 1,
   exclude_routes: [],
+  exclude_stops: [],
 };
 
 interface Options extends LoadingOptions, QueryOptions {}

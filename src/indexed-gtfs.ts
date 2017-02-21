@@ -20,8 +20,10 @@ import getFilterer, { WaterFilter } from './water-filter';
 
 // Two stops within walking distance of one another.
 export interface WalkingTransfer {
-  stopId: string;  // destination
-  km: number;  // time to walk there (origin stopId is implicit)
+  stopId: string;  // destination (origin stopId is implicit)
+  // One of (km, secs) will be set.
+  km?: number;  // time to walk there
+  secs?: number;  // if this is a min_time transfer from transfers.txt.
 }
 
 function indexByStop(stopTimes: gtfs.StopTime[]): {[stopId: string]: gtfs.StopTime[]} {
@@ -34,6 +36,15 @@ function indexByTrip(stopTimes: gtfs.StopTime[]): {[tripId: string]: gtfs.StopTi
 
 function indexShapes(shapes: gtfs.Shape[]) {
   return utils.groupAndSort(shapes, 'shape_id', 'shape_pt_sequence');
+}
+
+// (exported for testing)
+export function indexParents(stops: gtfs.Stop[]): {[stopId: string]: string[]} {
+  return _(stops)
+      .filter(stop => stop.parentStation)
+      .groupBy(stop => stop.parentStation)
+      .mapValues((ss: gtfs.Stop[]) => ss.map(stop => stop.stopId))
+      .value();
 }
 
 // Produce a map from stopId --> ordered list of routes serving that stop.
@@ -54,59 +65,56 @@ export function distanceKm(a: gtfs.Stop, b: gtfs.Stop): number {
   return location.haversine(a.stopLat, a.stopLng, b.stopLat, b.stopLng);
 }
 
-/** Find stops that are within walking distance of one another. */
-export function findNearbyStops(
-  stops: gtfs.Stop[],
-  options: LoadingOptions,
-  filter: WaterFilter,
-  stopIdToStopTimes: Record<string, gtfs.StopTime[]>,
-  stopIdToRoutes: Record<string, string[]>
-): TransferMap {
-  // Compute all distances. For large systems we could do something cleverer than all-pairs.
+export function getExplicitTransfers(stops: gtfs.Stop[], transfers: gtfs.Transfer[]) {
+  // We allow two types of transfers:
+  // - those enumerated in the transfers array.
+  // - between stops with the same parent station.
+  // This computes the transitive closure of those transfers.
+ 
   const pairs: {[originId: string]: WalkingTransfer[]} = {};
   for (const stop of stops) {
     pairs[stop.stopId] = [];
   }
-
-  const maxDistanceKm = options.max_allowable_between_stop_walk_km;
-
-  let count = 0;
-  // Helper to add a single walking connection.
-  const add = (a: gtfs.Stop, b: gtfs.Stop, km: number) => {
-    pairs[a.stopId].push({
-      stopId: b.stopId,
-      km,
-    });
-    count++;
-  };
-
-  // It's only useful to walk to to stops with service.
-  // In NYC, for example, the parent stations are unserved because the stops are on
-  // inbound/outbound child stations.
-  const servedStops = stops.filter(stop => stop.stopId in stopIdToStopTimes);
-
-  for (let i = 0; i < servedStops.length; i++) {
-    const a = servedStops[i];
-    const aRoutes = stopIdToRoutes[a.stopId];
-
-    for (let j = i + 1; j < servedStops.length; j++) {
-      const b = servedStops[j];
-      const km = distanceKm(a, b);
-      if (km <= maxDistanceKm && !filter(a.stopLat, a.stopLng, b.stopLat, b.stopLng)) {
-        const bRoutes = stopIdToRoutes[b.stopId];
-        // If two stops serve identical routes, then walking between them isn't helpful.
-        if (_.isEqual(aRoutes, bRoutes)) continue;
-        add(a, b, km);
-        add(b, a, km);
+ 
+  const parentPairs = _(stops)
+      .filter(stop => stop.parentStation)
+      .groupBy('parentStation')
+      .mapValues((ss: gtfs.Stop[]) => ss.map(s => s.stopId))
+      .value();
+ 
+  // Add the explicitly enumerated transfers between stops, as well as their child stops.
+  for (const transfer of transfers) {
+    if (transfer.type !== gtfs.TransferType.MIN_TIME) continue;
+ 
+    const from = transfer.fromStopId;
+    const to = transfer.toStopId;
+    const secs = transfer.minTransferTime;
+ 
+    for (const childFrom of [from].concat(parentPairs[from] || [])) {
+      for (const childTo of [to].concat(parentPairs[to] || [])) {
+        if (childFrom === childTo) continue;  // not totally clear what to do in this case.
+        pairs[childFrom].push({ stopId: childTo, secs });
       }
     }
   }
+ 
+  // Transfers between stops with the same parent station are free.
+  _.forEach(parentPairs, (childIds, parentId) => {
+    childIds.forEach((from, i) => {
+      pairs[parentId].push({ stopId: from, secs: 0 });
+      pairs[from].push({ stopId: parentId, secs: 0 });
+      childIds.slice(i + 1).forEach(to => {
+        pairs[from].push({ stopId: to, secs: 0 });
+        pairs[to].push({ stopId: from, secs: 0 });
+      });
+    });
+  });
 
-  for (const originStopId in pairs) {
-    pairs[originStopId] = _.sortBy(pairs[originStopId], walk => walk.km);
+  for (const origin in pairs) {
+    pairs[origin] = _.uniqBy(pairs[origin], transfer => transfer.stopId);
+    pairs[origin] = _.sortBy(pairs[origin], ['secs', 'stopId']);  // stable order for testing.
   }
-
-  console.warn('Added', count, 'walking pairs');
+ 
   return pairs;
 }
 
@@ -138,6 +146,7 @@ function extractShapeHints(trips: gtfs.Trip[], shapes: gtfs.Shape[], options: Lo
  */
 export default class IndexedGTFS extends GTFS {
   stopIdToStop: {[stopId: string]: gtfs.Stop};
+  parentStopIdToChildStopIds: {[stopId: string]: string[]};
   stopIdToStopTimes: {[stopId: string]: gtfs.StopTime[]};
   tripIdToStopTime: {[tripId: string]: gtfs.StopTime[]};
   tripIdToTrip: {[tripId: string]: gtfs.Trip};
@@ -154,6 +163,7 @@ export default class IndexedGTFS extends GTFS {
     super(feed.name);
     if (options === undefined) return;  // leave uninitialized, e.g. for cloning.
 
+    this.attributes = feed.attributes;
     this.calendarDates = feed.calendarDates;
     this.stops = feed.stops;
     this.stopTimes = feed.stopTimes;
@@ -170,6 +180,7 @@ export default class IndexedGTFS extends GTFS {
     this.stopIdToStop = _.keyBy(this.stops, 'stopId');
     this.routeIdToRoute = _.keyBy(this.routes, 'route_id');
     this.shapeIdToShapes = indexShapes(this.shapes);
+    this.parentStopIdToChildStopIds = indexParents(this.stops);
 
     // Find all the stops that you can walk between.
     this.stopIndex = SpatialIndex.from(this.stops.map(stop => ({
@@ -184,9 +195,7 @@ export default class IndexedGTFS extends GTFS {
       this.waterFilter = () => false;
     }
 
-    this.walkingTransfers = findNearbyStops(
-        this.stops, options, this.waterFilter, this.stopIdToStopTimes,
-        indexRoutesByStop(this.stopTimes, this.tripIdToTrip));
+    this.walkingTransfers = this.computeTransfers(feed, options);
   }
 
   /** Make a shallow clone of the indexed GTFS feed. */
@@ -218,6 +227,81 @@ export default class IndexedGTFS extends GTFS {
       indexedFeed.shapeHints = shapeHints;
       return indexedFeed;
     });
+  }
+
+  /** Find stops that are within walking distance of one another. */
+  findNearbyStops(
+    options: LoadingOptions
+  ): TransferMap {
+    // Compute all distances. For large systems we could do something cleverer than all-pairs.
+
+    // It's only useful to walk to stops with service.
+    // In NYC, for example, the parent stations are unserved because the stops are on
+    // inbound/outbound child stations.
+    const servedStops = this.stops.filter(stop => stop.stopId in this.stopIdToStopTimes);
+
+    const pairs: {[originId: string]: WalkingTransfer[]} = {};
+    for (const stop of servedStops) {
+      pairs[stop.stopId] = [];
+    }
+
+    const maxDistanceKm = options.max_allowable_between_stop_walk_km;
+
+    let count = 0;
+    // Helper to add a single walking connection.
+    const add = (a: gtfs.Stop, b: gtfs.Stop, km: number) => {
+      pairs[a.stopId].push({
+        stopId: b.stopId,
+        km,
+      });
+      count++;
+    };
+
+    const stopIdToRoutes = indexRoutesByStop(this.stopTimes, this.tripIdToTrip);
+
+    for (let i = 0; i < servedStops.length; i++) {
+      const a = servedStops[i];
+      const aRoutes = stopIdToRoutes[a.stopId];
+      const aFeed = a.feed;
+      const aHasTransfers =
+          aFeed in this.attributes && this.attributes[aFeed].hasTransfers;
+
+      for (let j = i + 1; j < servedStops.length; j++) {
+        const b = servedStops[j];
+
+        const bFeed = b.feed;
+        if (aFeed === bFeed && aHasTransfers) continue;  // not allowed by transfers.txt.
+
+        const km = distanceKm(a, b);
+        if (km <= maxDistanceKm && !this.waterFilter(a.stopLat, a.stopLng, b.stopLat, b.stopLng)) {
+          const bRoutes = stopIdToRoutes[b.stopId];
+          // If two stops serve identical routes, then walking between them isn't helpful.
+          if (_.isEqual(aRoutes, bRoutes)) continue;
+          add(a, b, km);
+          add(b, a, km);
+        }
+      }
+    }
+
+    for (const originStopId in pairs) {
+      pairs[originStopId] = _.sortBy(pairs[originStopId], walk => walk.km);
+    }
+
+    console.warn('Added', count, 'walking pairs');
+    return pairs;
+  }
+
+  private computeTransfers(feed: GTFS, options: LoadingOptions) {
+    // The feed includes explicit transfer data (transfers.txt). We'll use that.
+    const explicitTransfers = getExplicitTransfers(this.stops, feed.transfers);
+    const implicitTransfers = this.findNearbyStops(options);
+
+    const pairs = explicitTransfers;
+    _.forEach(implicitTransfers, (transfers, originId) => {
+      pairs[originId] = (pairs[originId] || []).concat(transfers);
+    });
+
+    return pairs;
   }
 
   /**

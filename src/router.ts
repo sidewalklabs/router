@@ -121,7 +121,7 @@ function findStopTimeInSequence(stopTimes: gtfs.StopTime[], stopSequence: number
   }
 
   // Otherwise fall back to a binary search.
-  return _.sortedIndexBy(stopTimes, {stopSequence}, 'stopSequence');
+  return _.sortedIndexBy(stopTimes, {stopSequence} as any, 'stopSequence');
 }
 
 /** Take vehicles from marked stops in tau[k - 1], populating tau[k]. */

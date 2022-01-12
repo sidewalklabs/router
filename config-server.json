@@ -1,0 +1,43 @@
+{
+  "max_allowable_between_stop_walk_km": 0.5,
+  "max_allowable_walking_distance_km": 4.0,
+  "max_allowable_number_of_transfers": 3,
+
+  "max_walking_distance_km": 1.5,
+  "walking_speed_kph": 5.1,
+  "max_waiting_time_secs": 1800,
+  "transfer_penalty_secs": 0,
+
+  "departure_date": "20170126",
+  "gtfs_data_dirs": [
+    "nyc-gtfs/google_transit_siferry",
+    "nyc-gtfs/google_transit_subway",
+    "nyc-gtfs/google_transit_bronx",
+    "nyc-gtfs/google_transit_brooklyn",
+    "nyc-gtfs/google_transit_manhattan",
+    "nyc-gtfs/google_transit_queens",
+    "nyc-gtfs/google_transit_staten_island"
+  ],
+  "water_geojson_file": "water-nyc.geojson",
+
+  "shape_hints": [
+    { "route_id": "Q", "direction_id": 0, "shape_id": "Q..N55R" },
+    { "route_id": "Q", "direction_id": 1, "shape_id": "Q..S55R" },
+    { "route_id": "5", "direction_id": 0, "shape_id": "5..N04R" },
+    { "route_id": "5", "direction_id": 1, "shape_id": "5..S04R" },
+    { "route_id": "G", "direction_id": 0, "shape_id": "G..N13R" },
+    { "route_id": "G", "direction_id": 1, "shape_id": "G..S13R" },
+    { "route_id": "1", "direction_id": 0, "shape_id": "1..N03R" },
+    { "route_id": "1", "direction_id": 1, "shape_id": "1..S03R" },
+    { "route_id": "W", "direction_id": 0, "shape_id": "N..N20R" },
+    { "route_id": "W", "direction_id": 1, "shape_id": "N..S20R" }
+  ],
+
+  "preset_destinations": [
+    {
+      "name": "nycbgs",
+      "locations_file": "test/perf/nyc-bgs.locations.txt",
+      "max_allowable_destination_walk_km": 1.5
+    }
+  ]
+}

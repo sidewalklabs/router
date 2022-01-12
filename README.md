@@ -1,16 +1,21 @@
-# transit-pairs
+# NYC Transit Explorer
 
-These tools generate commute times using a transit feed.
+Quickstart:
 
-You'll need GTFS data to run this. You can download a [sample GTFS feed][sample] from
-the GTFS spec site or download data from the cloud storage, under directory flowsit, and put it under data/elpaso:
+    yarn
+    unzip nyc-gtfs.zip
+    ts-node client/server/server.ts --router-url http://localhost:4567
+    node --max_old_space_size=$((1024 * 7)) -r ts-node/register src/server.ts config-server.json
 
-```
-npm install  # install dependencies
-npm install -g typescript ts-node  # TypeScript tooling
-```
+Then visit <http://localhost:1337>.
 
-# Generate a route
+See [blog post][] and video:
+
+[![Screen recording of the NYC Transit Explorer](https://img.youtube.com/vi/RNtsqTXHn4E/0.jpg)](https://www.youtube.com/watch?v=RNtsqTXHn4E)
+
+## Command line tools
+
+### Generate a route
 
 Use the one-to-one tool to see details of a particular route:
 
@@ -42,7 +47,7 @@ Loaded and indexed GTFS files in 0.013 s
 }
 ```
 
-# Calculate commute times between all locations.
+### Calculate commute times between all locations.
 
 Use the `all-pairs` mode of the CLI:
 
@@ -67,3 +72,4 @@ The output is a CSV file with `origin id, destination id, travel seconds` tuples
 ```
 
 [sample]: https://developers.google.com/transit/gtfs/examples/gtfs-feed
+[blog post]: https://www.sidewalklabs.com/insights/new-map-demo-how-the-l-train-shutdown-will-impact-your-commute

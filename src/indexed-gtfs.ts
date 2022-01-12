@@ -41,7 +41,7 @@ function indexShapes(shapes: gtfs.Shape[]) {
 // (exported for testing)
 export function indexParents(stops: gtfs.Stop[]): {[stopId: string]: string[]} {
   return _(stops)
-      .filter(stop => stop.parentStation)
+      .filter(stop => !!stop.parentStation)
       .groupBy(stop => stop.parentStation)
       .mapValues((ss: gtfs.Stop[]) => ss.map(stop => stop.stopId))
       .value();
@@ -70,26 +70,26 @@ export function getExplicitTransfers(stops: gtfs.Stop[], transfers: gtfs.Transfe
   // - those enumerated in the transfers array.
   // - between stops with the same parent station.
   // This computes the transitive closure of those transfers.
- 
+
   const pairs: {[originId: string]: WalkingTransfer[]} = {};
   for (const stop of stops) {
     pairs[stop.stopId] = [];
   }
- 
+
   const parentPairs = _(stops)
-      .filter(stop => stop.parentStation)
+      .filter(stop => !!stop.parentStation)
       .groupBy('parentStation')
       .mapValues((ss: gtfs.Stop[]) => ss.map(s => s.stopId))
       .value();
- 
+
   // Add the explicitly enumerated transfers between stops, as well as their child stops.
   for (const transfer of transfers) {
     if (transfer.type !== gtfs.TransferType.MIN_TIME) continue;
- 
+
     const from = transfer.fromStopId;
     const to = transfer.toStopId;
     const secs = transfer.minTransferTime;
- 
+
     for (const childFrom of [from].concat(parentPairs[from] || [])) {
       for (const childTo of [to].concat(parentPairs[to] || [])) {
         if (childFrom === childTo) continue;  // not totally clear what to do in this case.
@@ -97,7 +97,7 @@ export function getExplicitTransfers(stops: gtfs.Stop[], transfers: gtfs.Transfe
       }
     }
   }
- 
+
   // Transfers between stops with the same parent station are free.
   _.forEach(parentPairs, (childIds, parentId) => {
     childIds.forEach((from, i) => {
@@ -114,7 +114,7 @@ export function getExplicitTransfers(stops: gtfs.Stop[], transfers: gtfs.Transfe
     pairs[origin] = _.uniqBy(pairs[origin], transfer => transfer.stopId);
     pairs[origin] = _.sortBy(pairs[origin], ['secs', 'stopId']);  // stable order for testing.
   }
- 
+
   return pairs;
 }
 

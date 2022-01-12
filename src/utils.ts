@@ -68,11 +68,7 @@ export function fileExists(filename: string): boolean {
  *         --> {'a': [{k: 'a', b: 1}, {k: 'a', b: 2}], 'c': [{k: 'c', b: 3}]}
  */
 export function groupAndSort<T>(xs: T[], groupBy: keyof T, sortBy: keyof T): {[key: string]: T[]} {
-  const o = _.groupBy(xs, groupBy);
-  for (const k in o) {
-    o[k] = _.sortBy(o[k], sortBy);
-  }
-  return o;
+  return _.mapValues(_.groupBy(xs, groupBy), vs => _.sortBy(vs, sortBy));
 }
 
 /**
